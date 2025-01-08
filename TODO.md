@@ -7,6 +7,8 @@ Chat aggregator
 - [ ] tiktok get messages
 - [ ] Play sound when displaying a message
 - [ ] Messages should be placed in a box with a scroll
+- [ ] Viewer count from platforms
+- [ ] Handle errors (logging?)
 
 ## Info on connections
 
