@@ -4,14 +4,14 @@ Message :: struct {
 	text: string,
 }
 
-Service_Proc :: #type proc(rec_p: Rec_P) -> []Message
+Service_Proc :: #type proc(rec_p: Req_Proc) -> []Message
 
-Rec_P :: #type proc(url: string) -> string
+Req_Proc :: #type proc(url: string) -> string
 
-empty_rec_p :: proc(url: string) -> string {return ""}
+empty_req_p :: proc(url: string) -> string {return ""}
 
-// FIX: Remove empty_rec_p
-get_last_messages :: proc(procs: []Service_Proc, rec_p := empty_rec_p) -> []Message {
+// FIX: Remove empty_req_p
+get_last_messages :: proc(procs: []Service_Proc, req_p := empty_req_p) -> []Message {
 	if len(procs) == 0 {
 		return nil
 	}
@@ -19,7 +19,7 @@ get_last_messages :: proc(procs: []Service_Proc, rec_p := empty_rec_p) -> []Mess
 	res := make([dynamic]Message)
 
 	for p in procs {
-		ms := p(rec_p)
+		ms := p(req_p)
 		defer delete(ms)
 
 		append(&res, ..ms)

@@ -7,7 +7,7 @@ import "src:core"
 get_messages :: proc(t: ^testing.T) {
 	ss := []core.Service_Proc {
 		// Format
-		proc(_: core.Rec_P) -> []core.Message {
+		proc(_: core.Req_Proc) -> []core.Message {
 			ms := make([]core.Message, 1)
 			ms[0] = {
 				text = "Hello",
@@ -15,7 +15,7 @@ get_messages :: proc(t: ^testing.T) {
 
 			return ms
 		},
-		proc(_: core.Rec_P) -> []core.Message {
+		proc(_: core.Req_Proc) -> []core.Message {
 			ms := make([]core.Message, 1)
 			ms[0] = {
 				text = "Bye",
