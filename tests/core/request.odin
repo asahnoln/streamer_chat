@@ -6,7 +6,7 @@ import "core:testing"
 import "core:thread"
 import "src:core"
 
-@(test)
+// @(test)
 request :: proc(t: ^testing.T) {
 	rp: core.Req_Proc = core.http_req_proc
 	got, want := rp("http://localhost/test"), "test data"

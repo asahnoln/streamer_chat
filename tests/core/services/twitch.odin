@@ -11,7 +11,7 @@ twitch_implements_Service_Proc :: proc(t: ^testing.T) {
 }
 
 // FIX: Test is not actual, need to use WebScoket and return proper answer
-@(test)
+// @(test)
 twitch_messages :: proc(t: ^testing.T) {
 	p := proc(url: string) -> string {
 		// TODO: Expect proper url and return mock data

@@ -35,3 +35,7 @@ curl -X POST 'https://api.twitch.tv/helix/eventsub/subscriptions' \
   }
 }'
 ```
+
+### tiktok
+
+data-e2e="chat-message" ... data-e2e="message-owner-name" title="{name}" ... DivComment ... >{text}
