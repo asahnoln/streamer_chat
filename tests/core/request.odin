@@ -53,11 +53,12 @@ learning_sockets :: proc(t: ^testing.T) {
 	}
 
 	net.set_option(sock, .Receive_Timeout, time.Duration(10 * time.Second))
-	rd := 1024
-	data := [1024]byte{}
 
-	for rd == 1024 {
-		data = [1024]byte{}
+	N :: 1024
+	rd := N
+	data := [N]byte{}
+	for rd == N {
+		data = [N]byte{}
 		rd, err = net.recv_tcp(sock, data[:])
 		if !testing.expectf(t, err == nil, "want client err nil, got %v", err) {
 			return
