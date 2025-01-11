@@ -11,7 +11,7 @@ tiktok_implements_Service_Proc :: proc(t: ^testing.T) {
 }
 
 // FIX: Have to find source of a real data instead of html scraping
-@(test)
+// @(test)
 tiktok_messages :: proc(t: ^testing.T) {
 	@(static) test: ^testing.T
 	test = t
