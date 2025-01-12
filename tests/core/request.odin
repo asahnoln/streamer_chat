@@ -67,3 +67,18 @@ learning_sockets :: proc(t: ^testing.T) {
 		log.infof("rcvd data: %s", data)
 	}
 }
+
+@(test)
+num :: proc(t: ^testing.T) {
+	ig := 1
+	log.infof("num: %v, %b", ig, ig)
+
+	i: f32 = 1
+	log.infof("num: %v", i)
+
+	p := rawptr(&i)
+	t := cast(^i32)p
+	log.infof("num: %v, %b", t^, t^)
+
+	log.infof("num: %v", transmute([4]u8)i)
+}
