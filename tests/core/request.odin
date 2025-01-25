@@ -1,23 +1,65 @@
 package core_test
 
+import "core:io"
 import "core:log"
 import "core:net"
+import "core:sort"
+import "core:sync"
 import "core:testing"
 import "core:thread"
 import "core:time"
 import "src:core"
 
-// @(test)
+
+create_test_server :: proc(t: ^testing.T) -> (net.Any_Socket, ^thread.Thread) {
+	// FIX: Use random port?
+	ep, _, _ := net.resolve("localhost:8080")
+	srv, err := net.listen_tcp(ep)
+	if !testing.expectf(t, err == nil, "want srv listen err nil, got %v", err) {
+		return nil, nil
+	}
+
+	thr := thread.create_and_start_with_poly_data2(
+		t,
+		srv,
+		proc(t: ^testing.T, srv: net.TCP_Socket) {
+			cli, _, err := net.accept_tcp(srv)
+			if !testing.expectf(t, err == nil, "want srv accept err nil, got %v", err) {
+				return
+			}
+			defer net.close(cli)
+
+			// TODO: Test proper http text from client
+
+			d := "test data"
+			bw: int
+			bw, err = net.send(cli, transmute([]byte)d)
+			testing.expectf(t, err == nil, "want srv send err nil, got %v", err)
+		},
+		context,
+	)
+
+	return srv, thr
+}
+
+// TODO: test http and https without port (they should be 80 and 443 by default)
+@(test)
 request :: proc(t: ^testing.T) {
+	srv, thr := create_test_server(t)
+	defer {
+		net.close(srv)
+		thread.destroy(thr)
+	}
+
 	rp: core.Req_Proc = core.http_req_proc
-	got, want := rp("http://localhost/test"), "test data"
+	got, want := rp("http://localhost:8080/test"), "test data"
 	testing.expect_value(t, got, want)
 }
 
 // TODO: Remove after learning https and websocket
-@(test)
+// @(test)
 learning_sockets :: proc(t: ^testing.T) {
-	e, _, err := net.resolve("dummyjson.com:443")
+	e, _, err := net.resolve("dummyjson.com:80")
 	if !testing.expectf(t, err == nil, "want resolve err nil, got %v", err) {
 		return
 	}
@@ -52,33 +94,23 @@ learning_sockets :: proc(t: ^testing.T) {
 		return
 	}
 
-	net.set_option(sock, .Receive_Timeout, time.Duration(10 * time.Second))
+	net.set_option(sock, .Receive_Timeout, time.Duration(1 * time.Second))
 
 	N :: 1024
 	rd := N
 	data := [N]byte{}
+	i := 0
 	for rd == N {
 		data = [N]byte{}
 		rd, err = net.recv_tcp(sock, data[:])
 		if !testing.expectf(t, err == nil, "want client err nil, got %v", err) {
 			return
 		}
+		i += rd
 		log.infof("rcvd bytes: %v", rd)
 		log.infof("rcvd data: %s", data)
 	}
-}
 
-@(test)
-num :: proc(t: ^testing.T) {
-	ig := 1
-	log.infof("num: %v, %b", ig, ig)
-
-	i: f32 = 1
-	log.infof("num: %v", i)
-
-	p := rawptr(&i)
-	t := cast(^i32)p
-	log.infof("num: %v, %b", t^, t^)
-
-	log.infof("num: %v", transmute([4]u8)i)
+	log.info("finished test learning_sockets")
+	testing.expect(t, i > 0)
 }
