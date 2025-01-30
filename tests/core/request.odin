@@ -10,7 +10,6 @@ import "core:thread"
 import "core:time"
 import "src:core"
 
-
 create_test_server :: proc(t: ^testing.T) -> (net.Any_Socket, ^thread.Thread) {
 	// FIX: Use random port?
 	ep, _, _ := net.resolve("localhost:8080")
